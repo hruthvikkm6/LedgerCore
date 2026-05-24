@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LedgerCore Bank - Transaction Ledger System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Toast Notification Center -->
+        <div id="toast-container"></div>
+
+        <!-- 1. AUTHENTICATION PANEL -->
+        <div id="auth-view" class="view-container">
+            <div class="auth-card glass">
+                <div class="brand-header">
+                    <div class="brand-logo">🌌</div>
+                    <h1>LedgerCore</h1>
+                    <p>Real-Time Ledger & Payments Engine</p>
+                </div>
+                
+                <div class="tab-selectors">
+                    <button id="tab-login" class="tab-btn active">Sign In</button>
+                    <button id="tab-signup" class="tab-btn">Register</button>
+                </div>
+
+                <!-- Sign In Form -->
+                <form id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" placeholder="Enter username" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="submit-btn glow-btn">Access Secure Ledger</button>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form id="signup-form" class="auth-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="signup-firstname">First Name</label>
+                            <input type="text" id="signup-firstname" placeholder="John" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-lastname">Last Name</label>
+                            <input type="text" id="signup-lastname" placeholder="Doe" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-username">Username</label>
+                        <input type="text" id="signup-username" placeholder="johndoe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" placeholder="john@doe.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="Min. 8 characters" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-role">Request Account Level</label>
+                        <select id="signup-role">
+                            <option value="customer">Customer Access</option>
+                            <option value="admin">System Administrator (ADMIN)</option>
+                            <option value="ops">Operations Desk (OPS)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn glow-btn">Create Secure Account</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 2. MAIN BANKING DASHBOARD -->
+        <div id="main-view" class="view-container hidden">
+            <!-- Navigation Header -->
+            <header class="navbar glass">
+                <div class="nav-brand">
+                    <span class="nav-icon">🌌</span>
+                    <div>
+                        <h2>LedgerCore</h2>
+                        <span class="system-badge">PAYMENTS NODE ACTIVE</span>
+                    </div>
+                </div>
+                <div class="nav-actions">
+                    <div class="user-profile">
+                        <span id="user-initials" class="avatar">U</span>
+                        <div class="user-meta">
+                            <span id="nav-username">username</span>
+                            <span id="nav-role" class="role-badge">CUSTOMER</span>
+                        </div>
+                    </div>
+                    <button id="logout-btn" class="logout-btn">Disconnect</button>
+                </div>
+            </header>
+
+            <main class="dashboard-grid">
+                <!-- Left Column: Accounts & Forms -->
+                <div class="dashboard-col-left">
+                    <!-- Accounts Panel -->
+                    <section class="dashboard-section glass">
+                        <div class="section-header">
+                            <h3>Asset & Liability Accounts</h3>
+                        </div>
+                        <div id="accounts-grid" class="accounts-grid">
+                            <div class="no-accounts">No accounts active. Consult system admin to register an account.</div>
+                        </div>
+                    </section>
+
+                    <!-- Payment Action forms -->
+                    <section class="dashboard-section glass">
+                        <div class="section-header">
+                            <h3>Ledger Entry Execution</h3>
+                            <div class="tab-selectors mini">
+                                <button id="tab-transfer" class="mini-tab active">Transfer</button>
+                                <button id="tab-deposit" class="mini-tab">Deposit</button>
+                                <button id="tab-withdraw" class="mini-tab">Withdraw</button>
+                            </div>
+                        </div>
+
+                        <!-- Transfer Panel -->
+                        <form id="transfer-form" class="action-form active">
+                            <p class="form-notice">Inter-account transfers are subject to double-entry validation.</p>
+                            <div class="form-group">
+                                <label for="tx-transfer-from">Source Account (Debit)</label>
+                                <select id="tx-transfer-from" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-transfer-to">Destination Account (Credit)</label>
+                                <input type="text" id="tx-transfer-to" placeholder="Enter destination ACT number" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-transfer-amount">Amount ($)</label>
+                                <input type="number" id="tx-transfer-amount" step="0.01" min="0.01" placeholder="0.00" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-transfer-desc">Description</label>
+                                <input type="text" id="tx-transfer-desc" placeholder="e.g. Monthly rent" required>
+                            </div>
+                            <div class="idempotency-badge">
+                                <span class="id-icon">🔑</span>
+                                <span class="id-text">Auto-generating unique Idempotency Key</span>
+                            </div>
+                            <button type="submit" class="action-btn glow-btn-blue">Execute Transfer</button>
+                        </form>
+
+                        <!-- Deposit Panel -->
+                        <form id="deposit-form" class="action-form">
+                            <p class="form-notice">Internal reserve debit against system vaults.</p>
+                            <div class="form-group">
+                                <label for="tx-deposit-account">Destination Account (Credit)</label>
+                                <select id="tx-deposit-account" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-deposit-amount">Amount ($)</label>
+                                <input type="number" id="tx-deposit-amount" step="0.01" min="0.01" placeholder="0.00" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-deposit-desc">Description</label>
+                                <input type="text" id="tx-deposit-desc" placeholder="e.g. Salary deposit" required>
+                            </div>
+                            <button type="submit" class="action-btn glow-btn-green">Post Deposit</button>
+                        </form>
+
+                        <!-- Withdraw Panel -->
+                        <form id="withdraw-form" class="action-form">
+                            <p class="form-notice">Internal reserve credit against system vaults.</p>
+                            <div class="form-group">
+                                <label for="tx-withdraw-account">Source Account (Debit)</label>
+                                <select id="tx-withdraw-account" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-withdraw-amount">Amount ($)</label>
+                                <input type="number" id="tx-withdraw-amount" step="0.01" min="0.01" placeholder="0.00" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tx-withdraw-desc">Description</label>
+                                <input type="text" id="tx-withdraw-desc" placeholder="ATM Cash Withdrawal" required>
+                            </div>
+                            <button type="submit" class="action-btn glow-btn-red">Post Withdrawal</button>
+                        </form>
+                    </section>
+                </div>
+
+                <!-- Right Column: Ledger Logs & Admin Console -->
+                <div class="dashboard-col-right">
+                    <!-- History Section -->
+                    <section class="dashboard-section glass">
+                        <div class="section-header">
+                            <h3>Committed Transaction Ledger</h3>
+                            <button id="export-statement-btn" class="secondary-btn" disabled>📥 Export PDF</button>
+                        </div>
+                        
+                        <div class="table-wrapper">
+                            <table class="ledger-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>TX ID</th>
+                                        <th>Description</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledger-history-rows">
+                                    <tr>
+                                        <td colspan="6" class="table-empty">Select active account to load history logs.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Admin & Ops Panel -->
+                    <section id="admin-ops-section" class="dashboard-section glass hidden">
+                        <div class="section-header">
+                            <h3>🔧 Administration Control Center</h3>
+                        </div>
+                        <div class="admin-grid">
+                            <!-- Create Account Column -->
+                            <div class="admin-card">
+                                <h4>Register User Account</h4>
+                                <form id="admin-create-account-form">
+                                    <div class="form-group">
+                                        <label for="adm-user-id">Owner User ID</label>
+                                        <input type="number" id="adm-user-id" placeholder="1" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="adm-account-type">Type</label>
+                                            <select id="adm-account-type">
+                                                <option value="LIABILITY">LIABILITY (Savings/Checking)</option>
+                                                <option value="ASSET">ASSET (Cash/Reserve)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="adm-currency">Currency</label>
+                                            <input type="text" id="adm-currency" value="USD" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="adm-initial-balance">Initial Seed Balance ($)</label>
+                                        <input type="number" id="adm-initial-balance" step="0.01" value="0.00" required>
+                                    </div>
+                                    <button type="submit" class="admin-btn">Register New Account</button>
+                                </form>
+                            </div>
+
+                            <!-- Registered Users List Card -->
+                            <div class="admin-card">
+                                <h4>Registered Users Directory</h4>
+                                <div class="table-wrapper mini-table">
+                                    <table class="ledger-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Username</th>
+                                                <th>Full Name</th>
+                                                <th>Role</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="admin-users-list-rows">
+                                            <tr>
+                                                <td colspan="4" class="table-empty">Loading users...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Account Status Desk -->
+                            <div class="admin-card">
+                                <h4>Account Freeze Control</h4>
+                                <form id="admin-status-form">
+                                    <div class="form-group">
+                                        <label for="adm-status-account">Account Number</label>
+                                        <input type="text" id="adm-status-account" placeholder="ACTXXXXXXXXXXXX" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <button type="button" id="adm-btn-freeze" class="admin-btn-red">Freeze Account</button>
+                                        <button type="button" id="adm-btn-unfreeze" class="admin-btn-green">Activate Account</button>
+                                    </div>
+                                </form>
+
+                                <div class="reconcile-card">
+                                    <h4>Dynamic Accounting Audit</h4>
+                                    <p>Triggers dual-entry reconciliation scan checking matching credits/debits.</p>
+                                    <button id="admin-reconcile-btn" class="admin-btn-glow">Trigger Reconciliation Run</button>
+                                    
+                                    <div id="reconciliation-report" class="reconciliation-report hidden">
+                                        <h5>Audit Report</h5>
+                                        <div class="report-row"><span>Status:</span> <strong id="rep-status">SUCCESS</strong></div>
+                                        <div class="report-row"><span>Checked:</span> <span id="rep-checked">0</span> transactions</div>
+                                        <div class="report-row"><span>Anomalies:</span> <span id="rep-anomalies">0</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
